@@ -1,2 +1,18 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+  import PathfindingVisualiser from '$lib/components/PathfindingVisualiser/PathfindingVisualiser.svelte';
+</script>
+
+<div id="visualiser">
+  <PathfindingVisualiser />
+</div>
+
+<style lang="scss">
+  #visualiser {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+  }
+</style>
