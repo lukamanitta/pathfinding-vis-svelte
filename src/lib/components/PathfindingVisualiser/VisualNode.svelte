@@ -1,10 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { scale } from 'svelte/transition';
-  import type { Node } from '$lib/components/Node';
-  import type { Point } from '$lib/components/Point';
 
-  export let node: Node;
+  export let node: Path.Node;
 
   let colour = 'green';
   $: {
@@ -20,8 +18,6 @@
       colour = 'green';
     }
   }
-
-  let hoverColour = 'green';
 
   $: isSpecial = node.isWall || node.visited || node.isEndNode || node.isStartNode;
 
