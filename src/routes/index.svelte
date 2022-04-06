@@ -8,6 +8,7 @@
 
 <style lang="scss">
   #visualiser {
+    height: 80vh;
     width: 80%;
     margin: 0 auto;
     display: flex;
