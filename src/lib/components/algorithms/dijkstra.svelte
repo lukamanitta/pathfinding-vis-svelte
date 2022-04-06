@@ -2,12 +2,12 @@
   import shallowEqual from '$lib/scripts/shallowEqual';
 
   import { nodes } from '$lib/nodeStore';
-  import { shortestPathNodes } from '$lib/nodeStore';
+  import { computeDelay } from '$lib/globalsStore';
 
-  export let startPos: Path.Point;
-  export let endPos: Path.Point;
-
-  async function dijkstra(startPos: Path.Point, endPos: Path.Point) {
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+  async function dijkstra() {
     let startNode: Path.Node = $nodes.find((node) => node.isStartNode);
     let endNode: Path.Node = $nodes.find((node) => node.isEndNode);
 
@@ -16,25 +16,28 @@
     let unvisitedNodes: Path.Node[] = [...$nodes];
     let closestNode: Path.Node = startNode;
 
-    let calculateDijkstra = setInterval(() => {
+    while (true) {
       sortNodesByWeight(unvisitedNodes);
       closestNode = unvisitedNodes.shift();
       if (closestNode.isWall) {
-        return;
+        continue;
       }
       if (closestNode.weight === Infinity) {
         // Exit, must be stuck within walls and end node cannot be found
-        clearInterval(calculateDijkstra);
+        return;
+      }
+      visitedNodes.push(closestNode);
+      if ($computeDelay !== 0) {
+        await sleep($computeDelay);
       }
       closestNode.visited = true;
       if (shallowEqual(closestNode.position, endNode.position)) {
-        // $shortestPathNodes = calculateShortestPath(visitedNodes);
-        clearInterval(calculateDijkstra);
+        calculateShortestPath(visitedNodes);
+        return;
       }
-      visitedNodes.push(closestNode);
       updateUnvisitedNeighbors(closestNode, unvisitedNodes);
       $nodes = $nodes;
-    }, 50);
+    }
   }
 
   function sortNodesByWeight(unvisitedNodes: Path.Node[]) {
@@ -73,15 +76,15 @@
     return nodes.find((node) => shallowEqual(node.position, position));
   }
 
-  function calculateShortestPath(nodesVisited: Path.Node[]): Path.Node[] {
-    const shortestPathNodes: Path.Node[] = [];
-    let currentNode = nodesVisited[-1];
-    while (currentNode !== null) {
-      shortestPathNodes.unshift(currentNode);
+  async function calculateShortestPath(visitedNodes: Path.Node[]) {
+    let currentNode = visitedNodes.at(-1);
+    while (currentNode !== undefined) {
+      currentNode.partOfShortestPath = true;
+      await sleep($computeDelay);
+      $nodes = $nodes;
       currentNode = currentNode.previousNode;
     }
-    return shortestPathNodes;
   }
 </script>
 
-<button on:click={() => dijkstra(startPos, endPos)}>Dijkstra</button>
+<button on:click={() => dijkstra()}>Dijkstra</button>

@@ -6,6 +6,7 @@ declare namespace Path {
     isEndNode: boolean;
     isWall: boolean;
     visited: boolean;
+    partOfShortestPath: boolean;
     previousNode?: Node;
   }
 

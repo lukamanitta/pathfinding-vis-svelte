@@ -3,6 +3,8 @@
   import { scale } from 'svelte/transition';
 
   export let node: Path.Node;
+  export let nodeSize: number;
+  let nodeMargin: number = nodeSize / 8;
 
   let colour = 'green';
   $: {
@@ -12,6 +14,8 @@
       colour = 'blue';
     } else if (node.isEndNode) {
       colour = 'red';
+    } else if (node.partOfShortestPath) {
+      colour = 'yellow';
     } else if (node.visited) {
       colour = 'black';
     } else {
@@ -49,6 +53,8 @@
 
 <div
   class="node"
+  style:height={`${nodeSize}px`}
+  style:width={`${nodeSize}px`}
   on:mousedown={toggleWall}
   on:mouseenter={() => {
     hovered = true;
@@ -56,23 +62,29 @@
   }}
   on:mouseout={() => (hovered = false)}
 >
-  <div class="node-colour" style:background-color="lightblue" />
+  <div
+    class="node-colour"
+    style:background-color="lightblue"
+    style:height={`${nodeSize - nodeMargin}px`}
+    style:width={`${nodeSize - nodeMargin}px`}
+  />
   {#if (hovered && !isSpecial) || isSpecial}
-    <div transition:scale class="node-colour" style:background-color={colour} />
+    {#key colour}
+      <div
+        transition:scale
+        class="node-colour"
+        style:background-color={colour}
+        style:height={`${nodeSize - nodeMargin}px`}
+        style:width={`${nodeSize - nodeMargin}px`}
+      />
+    {/key}
   {/if}
 </div>
 
 <style lang="scss">
-  .node {
-    height: 33px;
-    width: 33px;
-  }
-
   .node-colour {
     position: absolute;
     margin: 0px;
-    height: 30px;
-    width: 30px;
     border-radius: 15%;
     pointer-events: none;
     z-index: 9999;
