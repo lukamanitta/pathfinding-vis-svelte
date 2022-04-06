@@ -9,6 +9,12 @@ of model and view.
 
 ## Issues
 
-Performance of algorithms could be better, problems mostly lie in the fact that
-visualisation is done real-time and some accommodations need to be made to
-maintain reactivity.
+The computing delay specific with the slider will not be an accurate
+ representation of the actual delay. This is not a performance issue
+ with the algorithm, but instead is a result of Javascript itself.  
+Javascript is single-threaded and uses an event loop system, meaning
+ functions like `settimeout` can be extremely inaccurate.  
+Because this is the only way (as far as I can tell) to implement a
+ sleep function, this is unavoidable.  
+The actual delay may be anywhere between 20 and 2000ms larger than the
+ specified delay.
