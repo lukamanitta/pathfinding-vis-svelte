@@ -4,7 +4,7 @@
   import { nodes } from '$lib/nodeStore';
   import { computeDelay } from '$lib/globalsStore';
 
-  import { at } from 'core-js/features/array/at';
+  import { at } from 'core-js/features/array/at.js';
 
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
